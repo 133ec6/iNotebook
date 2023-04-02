@@ -13,17 +13,18 @@ router.post('/createuser',[
     body('email').isEmail(),
     body('password').isLength({min:5})
 ],async (req,res)=>{
+  let success = false;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       console.log(errors);
-      return res.status(400).json({ errors: errors.array()});
+      return res.status(400).json({success, errors: errors.array()});
     }
 
     
     try{
       let user = await User.findOne({email:req.body.email});
       if(user){
-        return res.status(400).json({error :"User already exists"});
+        return res.status(400).json({success,error :"User already exists"});
       }
       const salt = await bcrypt.genSalt(10);
       const secPass =  await bcrypt.hash(req.body.password,salt);
@@ -41,7 +42,8 @@ router.post('/createuser',[
           }
       }
       const authtoken  = jwt.sign(data,JWT_SECRET);
-      res.json({authtoken})
+      success=true;
+      res.json({success,authtoken})
     }catch(err){
       console.error(err.message);
       res.status(500).send("Internal server error")
@@ -63,15 +65,16 @@ router.post('/login',[
   const {email,password} = req.body;
 
   try { 
-    let user = await User.findOne({email})
+    let user = await User.findOne({email});
+    let success = false;
     if(!user){
-      return res.status(400).json({error:"Invalid credentials"})
+      return res.status(400).json({success,error:"Invalid credentials"})
     }
 
     const passwordCompare =await bcrypt.compare(password,user.password)
     if(!passwordCompare){
       
-      return res.status(400).json({error:"Invalid credentials"})
+      return res.status(400).json({success,error:"Invalid credentials"})
     }
 
     const data = {
@@ -81,7 +84,8 @@ router.post('/login',[
       }
     }
     const authtoken  = jwt.sign(data,JWT_SECRET);
-    res.json({authtoken})
+    success = true;
+    res.json({success,authtoken})
   }catch(err){
     console.error(err.message);
     res.status(500).send("Internal server error")
