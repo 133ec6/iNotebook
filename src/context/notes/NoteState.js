@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react'
 import NoteContext from './NoteContext'
+// import { json } from 'react-router-dom';
 
 const NoteState = (props) => {
   const host = "http://localhost:5000";
@@ -18,7 +19,7 @@ const NoteState = (props) => {
     });
     
     const json = await response.json();
-    console.log(json);
+    // console.log(json);
     
     setNotes(json);
 
@@ -72,7 +73,7 @@ const NoteState = (props) => {
     
       // const response = 
       await fetch(`${host}/api/notes/updatenote/${id}`, {
-        method: "POST",
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
           "auth-token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjQyNzJjMWMwNTVkZWYyYjliMWQyMjYzIn0sImlhdCI6MTY4MDMzNzMxNn0.qgqiZTrwwU6NtNA59a0hN87qb9oVp8Ai58KC16KgOY8"
@@ -83,16 +84,18 @@ const NoteState = (props) => {
       // const json = response.json();
     
     
-
+      let newNotes = JSON.parse(JSON.stringify(notes));
     for(let index = 0;index<notes.length;index++)
     {
-      const element = notes[index];
+      const element = newNotes[index];
       if(element._id===id){
-        element.title = title;
-        element.description = description;
-        element.tag = tag;
+        newNotes[index].title = title;
+        newNotes[index].description = description;
+        newNotes[index].tag = tag;
+        break;
       }
     }
+    setNotes(newNotes)
   }
   return(
     <NoteContext.Provider value={{notes,setNotes,addNote,deleteNote,editNote,getNotes}}>
