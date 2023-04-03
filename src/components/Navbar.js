@@ -4,6 +4,10 @@ import { Link, useLocation } from 'react-router-dom'
 
 
 const Navbar = () => {
+
+    let handleClick=()=>{
+        localStorage.removeItem('token');
+    }
     let location = useLocation();
     useEffect(() => {
 
@@ -30,8 +34,10 @@ const Navbar = () => {
                             
                         </ul>
                         <div className="d-flex">
+                        {!localStorage.getItem('token') ?<div>
                         <Link className="btn btn-primary mx-2" to="/login" role="button">Login</Link>
-                        <Link className="btn btn-primary mx-2" to="/signup" role="button">SignUp</Link>
+                        <Link className="btn btn-primary mx-2" to="/signup" role="button">SignUp</Link></div>
+                        :<Link className="btn btn-primary mx-2" to="/login" role="button" onClick={handleClick}>LogOut</Link>}
                         </div>
                     </div>
                 </div>

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
 
-const Signup = () => {
+const Signup = (props) => {
 
     const host = "http://localhost:5000";
     let navigate = useNavigate();
@@ -25,13 +25,16 @@ const Signup = () => {
           if(json.success){
             localStorage.setItem('token' , json.authtoken);
             navigate("/");
+            props.showAlert("User created","success");
+
           }
           else{
-            alert("Invalid input")
+            props.showAlert("Invalid credentials","danger");
           }
     }
   return (
     <div className='container'>
+      <h1 className='text-center'> SignUp Page</h1>
       <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                     <label htmlFor="name" className="form-label">Name</label>

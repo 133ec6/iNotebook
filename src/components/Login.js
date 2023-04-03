@@ -1,7 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
 
-const Login = () => {
+const Login = (props) => {
     const host = "http://localhost:5000";
     let navigate = useNavigate();
     const handleSubmit = async (e) => {
@@ -23,13 +23,17 @@ const Login = () => {
           if(json.success){
             localStorage.setItem('token' , json.authtoken);
             navigate("/");
+            props.showAlert("Login successful","success");
+
           }
           else{
-            alert("Invalid credenials")
+            props.showAlert("Invalid credentials","danger");
+
           }
     }
     return (
         <div>
+            <h1 className='text-center'> Login Page</h1>
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                     <label htmlFor="email" className="form-label">Email address</label>
